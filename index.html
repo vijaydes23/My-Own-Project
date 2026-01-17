@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weblance Consulting | Future of Digital Innovation</title>
     
-
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
-    <!-- Browser Tab Logo (Favicon) -->
     <link rel="icon" type="image/png" href="Image/logo.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.0/vanilla-tilt.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -28,33 +30,27 @@
                         outfit: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#3B82F6', // Brighter Blue
-                        secondary: '#0F172A', // Deep Navy
-                        accent: '#8B5CF6', // Violet
+                        primary: '#3B82F6', 
+                        secondary: '#0F172A', 
+                        accent: '#8B5CF6', 
                         dark: '#020617', 
                         surface: '#ffffff',
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 6s ease-in-out 3s infinite',
-                        'scroll': 'scroll 20s linear infinite',
-                        'blob': "blob 7s infinite",
                         'spin-slow': 'spin 12s linear infinite',
+                        // CHANGED: Increased time to 30s for smoother scroll
+                        'scroll': 'scroll 30s linear infinite', 
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-20px)' },
                         },
+                        // CHANGED: Scroll logic updated to -50% for infinite loop
                         scroll: {
                             '0%': { transform: 'translateX(0)' },
-                            '100%': { transform: 'translateX(-100%)' },
-                        },
-                        blob: {
-                            "0%": { transform: "translate(0px, 0px) scale(1)" },
-                            "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                            "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
-                            "100%": { transform: "translate(0px, 0px) scale(1)" },
+                            '100%': { transform: 'translateX(-50%)' }, 
                         },
                     },
                 }
@@ -66,82 +62,65 @@
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #3B82F6, #8B5CF6); border-radius: 4px; }
-
+        ::-webkit-scrollbar-thumb { 
+            background: linear-gradient(to bottom, #3B82F6, #8B5CF6); 
+            border-radius: 4px; 
+        }
+        
         /* Scroll Progress Bar */
         #progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 4px;
+            position: fixed; top: 0; left: 0; height: 4px;
             background: linear-gradient(to right, #3B82F6, #8B5CF6);
-            z-index: 9999;
-            width: 0%;
-            transition: width 0.1s;
+            z-index: 10000; width: 0%; transition: width 0.1s ease-out;
         }
 
         /* Glassmorphism */
         .glass {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.90);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Spotlight Effect CSS */
+        /* Spotlight Card */
         .spotlight-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(229, 231, 235, 0.5);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
         .spotlight-card::before {
             content: '';
             position: absolute;
-            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(59, 130, 246, 0.1), transparent 40%);
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            background: radial-gradient(
+                800px circle at var(--mouse-x) var(--mouse-y), 
+                rgba(59, 130, 246, 0.06), 
+                transparent 40%
+            );
+            top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0;
-            transition: opacity 0.5s;
+            transition: opacity 0.5s ease;
             pointer-events: none;
             z-index: 1;
         }
-        .spotlight-card:hover::before {
-            opacity: 1;
-        }
-        .spotlight-card:hover {
-            border-color: #3B82F6;
-            transform: translateY(-5px);
+        .spotlight-card:hover::before { opacity: 1; }
+        .spotlight-card:hover { border-color: #3B82F6; }
+
+        /* Particle Container */
+        #particles-js {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0;
         }
 
         /* Typewriter Cursor */
-        .typewriter::after {
-            content: '|';
-            animation: blink 1s step-start infinite;
-            color: #3B82F6;
-        }
+        .typewriter::after { content: '|'; animation: blink 1s step-start infinite; color: #3B82F6; }
         @keyframes blink { 50% { opacity: 0; } }
-
-        /* Gradient Text */
-        .text-gradient {
-            background: linear-gradient(to right, #3B82F6, #8B5CF6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
 
         /* Preloader */
         #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease-out;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff; z-index: 99999;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
         }
     </style>
 </head>
@@ -156,7 +135,7 @@
 
     <div id="progress-bar"></div>
 
-    <button id="backToTop" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center translate-y-20 opacity-0 transition-all duration-300 z-40 hover:bg-secondary hover:scale-110">
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center translate-y-20 opacity-0 transition-all duration-500 z-40 hover:bg-secondary hover:scale-110">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -164,14 +143,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="window.scrollTo(0,0)">
-                    <img src="Image/logo.png" alt="Weblance Consulting Logo"class="w-10 h-10 mr-2 rounded-lg object-contain"/>
-                    <span class="font-bold text-2xl text-secondary tracking-tight">Weblance<span class="text-primary"> Consulting</span></span>
+                    <img src="Image/logo.png" alt="Logo" class="w-10 h-10 mr-2 rounded-lg object-contain"/>
+                    <span class="font-bold text-xl md:text-2xl text-secondary tracking-tight">Weblance<span class="text-primary"> Consulting</span></span>
                 </div>
 
                 <div class="hidden md:flex space-x-8 items-center">
                     <a href="#home" class="text-gray-600 hover:text-primary font-medium transition relative group">Home<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
                     <a href="#services" class="text-gray-600 hover:text-primary font-medium transition relative group">Services<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
-                    <a href="#projects" class="text-gray-600 hover:text-primary font-medium transition relative group">Our Work<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
+                    <a href="#projects" class="text-gray-600 hover:text-primary font-medium transition relative group">Work<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
+                    <a href="#team" class="text-gray-600 hover:text-primary font-medium transition relative group">Team<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
                     <a href="#about" class="text-gray-600 hover:text-primary font-medium transition relative group">About<span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span></a>
                     <a href="#contact" class="px-6 py-2.5 bg-secondary text-white rounded-full hover:bg-primary transition-all duration-300 shadow-lg hover:shadow-primary/50 transform hover:-translate-y-0.5 font-medium">Let's Talk</a>
                 </div>
@@ -184,48 +164,43 @@
             </div>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 absolute w-full transition-all shadow-xl">
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 absolute w-full transition-all shadow-xl z-50">
             <div class="px-4 pt-2 pb-6 space-y-2">
                 <a href="#home" class="block px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">Home</a>
                 <a href="#services" class="block px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">Services</a>
                 <a href="#projects" class="block px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">Projects</a>
+                <a href="#team" class="block px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">Team</a>
                 <a href="#about" class="block px-4 py-3 rounded-xl font-medium text-gray-700 hover:bg-blue-50 hover:text-primary transition">About</a>
                 <a href="#contact" class="block px-4 py-3 mt-4 text-center rounded-xl font-bold bg-primary text-white shadow-lg">Contact Us</a>
             </div>
         </div>
     </nav>
 
-    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        
-        <div class="absolute inset-0 z-0">
-            <img src="Image/Home BG.png" 
-                 alt="Background" 
-                 class="w-full h-full object-cover">
-            
-            <div class="absolute inset-0 bg-gradient-to-b from-secondary/20 via-secondary/60 to-secondary/20"></div>
-        </div>
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-secondary">
+        <div id="particles-js"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/50 to-secondary z-0 pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md shadow-sm mb-8" data-aos="fade-down">
                 <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                <span class="text-sm font-semibold text-white tracking-wide uppercase">Accepting New Projects</span>
+                <span class="text-xs md:text-sm font-semibold text-white tracking-wide uppercase">Accepting New Projects</span>
             </div>
             
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight" data-aos="fade-up" data-aos-delay="100">
-                We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400" id="typewriter"></span>
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight" data-aos="fade-up" data-aos-delay="100">
+                We Build <br class="md:hidden" /> <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400" id="typewriter"></span>
             </h1>
             
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed" data-aos="fade-up" data-aos-delay="200">
+            <p class="text-lg md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed px-2" data-aos="fade-up" data-aos-delay="200">
                 Building smart Websites, Apps, Data Platforms, and AI Automation
                 that help Businesses scale Faster and Grow.
             </p>
             
-            <div class="flex flex-col sm:flex-row justify-center gap-4" data-aos="fade-up" data-aos-delay="300">
-                <a href="#contact" class="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-lg hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 px-4" data-aos="fade-up" data-aos-delay="300">
+                <a href="#contact" class="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-lg hover:shadow-blue-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 transform hover:scale-105">
                     Start Your Project <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="#projects" class="px-8 py-4 bg-white/10 text-white backdrop-blur-sm font-bold rounded-xl shadow-md border border-white/20 hover:bg-white hover:text-secondary transition-all duration-300 flex items-center justify-center gap-2 group">
+                <a href="#projects" class="px-8 py-4 bg-white/10 text-white backdrop-blur-sm font-bold rounded-xl shadow-md border border-white/20 hover:bg-white hover:text-secondary transition-all duration-300 flex items-center justify-center gap-2 group transform hover:scale-105">
                     <i class="fas fa-play-circle text-blue-400 group-hover:text-secondary transition-colors"></i> View Our Work
                 </a>
             </div>
@@ -235,43 +210,29 @@
     <div class="bg-white py-10 border-y border-gray-100 overflow-hidden">
         <p class="text-center text-sm font-bold text-gray-400 uppercase tracking-widest mb-6">Technologies We Work With</p>
         <div class="relative flex overflow-x-hidden group">
-            <div class="animate-scroll whitespace-nowrap flex items-center space-x-16 
-                        opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+            <div class="flex animate-scroll whitespace-nowrap items-center space-x-16 opacity-60 grayscale group-hover:grayscale-0 transition-all duration-500">
+                
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-react text-blue-500"></i> React</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-node-js text-green-500"></i> Node.js</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-python text-yellow-500"></i> Python</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-aws text-orange-500"></i> AWS</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-google text-red-500"></i> Google Cloud</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-brain text-purple-500"></i> OpenAI</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-pie text-indigo-500"></i> Power BI</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-code text-primary"></i> Web Dev</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-mobile-alt text-primary"></i> Flutter</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-figma text-pink-500"></i> Figma</span>
 
-
-            <!-- Tech Stack -->
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-react text-blue-500"></i> React</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-node-js text-green-500"></i> Node.js</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-python text-yellow-500"></i> Python</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-aws text-orange-500"></i> AWS</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-google text-red-500"></i> Google Cloud</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-brain text-purple-500"></i> OpenAI</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-pie text-indigo-500"></i> Power BI</span>
-
-            <!-- Services -->
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-code text-primary"></i> Web Development</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-mobile-alt text-primary"></i> App Development</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-bullhorn text-primary"></i> Digital Marketing</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-robot text-primary"></i> AI Automation</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-line text-primary"></i> Data Analytics</span>
-
-            <!--- App Development -->
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-android text-green-500"></i> Android</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-apple text-gray-800"></i> iOS</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-react text-sky-400"></i> React Native</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-mobile-alt text-blue-500"></i> Flutter</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-node-js text-green-600"></i> App Backend</span>
-
-            <!--- Digital Marketing -->
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-bullhorn text-orange-500"></i> Digital Marketing</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-search text-blue-500"></i> SEO</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-google text-red-500"></i> Google Ads</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-line text-green-500"></i> Growth Marketing</span>
-
-            <!--- UI/UX Design -->
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-figma text-pink-500"></i> Figma</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-pencil-ruler text-purple-500"></i> UI/UX Design</span>
-            <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-layer-group text-indigo-500"></i> Prototyping</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-react text-blue-500"></i> React</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-node-js text-green-500"></i> Node.js</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-python text-yellow-500"></i> Python</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-aws text-orange-500"></i> AWS</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-google text-red-500"></i> Google Cloud</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-brain text-purple-500"></i> OpenAI</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-pie text-indigo-500"></i> Power BI</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-code text-primary"></i> Web Dev</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fas fa-mobile-alt text-primary"></i> Flutter</span>
+                <span class="text-xl font-bold flex items-center gap-2"><i class="fab fa-figma text-pink-500"></i> Figma</span>
 
             </div>
         </div>
@@ -343,14 +304,11 @@
     </section>
 
     <div class="bg-secondary py-20 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-64 h-64 bg-primary blur-[100px] opacity-20"></div>
-        <div class="absolute bottom-0 right-0 w-64 h-64 bg-accent blur-[100px] opacity-20"></div>
-
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-700">
                 <div data-aos="zoom-in">
                     <span class="block text-4xl md:text-6xl font-bold text-white mb-2 counter" data-target="50">0</span>
-                    <span class="text-gray-400 text-sm font-medium tracking-wide">PROJECTS DONE</span>
+                    <span class="text-gray-400 text-sm font-medium tracking-wide">PROJECTS</span>
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="100">
                     <span class="block text-4xl md:text-6xl font-bold text-white mb-2 counter" data-target="96">0</span>
@@ -358,15 +316,16 @@
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="200">
                     <span class="block text-4xl md:text-6xl font-bold text-white mb-2">24/7</span>
-                    <span class="text-gray-400 text-sm font-medium tracking-wide">SUPPORT ACTIVE</span>
+                    <span class="text-gray-400 text-sm font-medium tracking-wide">SUPPORT</span>
                 </div>
                 <div data-aos="zoom-in" data-aos-delay="300">
                     <span class="block text-4xl md:text-6xl font-bold text-white mb-2 counter" data-target="3">0</span>
-                    <span class="text-gray-400 text-sm font-medium tracking-wide">YEARS EXPERIENCE</span>
+                    <span class="text-gray-400 text-sm font-medium tracking-wide">YEARS EXP.</span>
                 </div>
             </div>
         </div>
     </div>
+
 
     <section id="projects" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -447,162 +406,124 @@
         </div>
     </section>
 
-    <section id="about" class="py-24 bg-white relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center gap-16">
-                <div class="w-full md:w-1/2 relative" data-aos="fade-right">
-                    <div class="absolute inset-0 bg-primary rounded-2xl rotate-3 transform translate-x-2 translate-y-2 opacity-20"></div>
-                    <img src="Image/Company BG.png" onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" alt="Team Meeting" class="rounded-2xl shadow-2xl w-full object-cover h-[450px] relative z-10">
-                    <!-- <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-xl shadow-xl z-20 animate-bounce">
-                        <span class="block text-3xl font-bold text-primary">3+</span>
-                        <span class="text-sm font-semibold text-gray-600">Years of<br>Experience</span>
-                    </div> -->
-                </div>
-                <div class="w-full md:w-1/2" data-aos="fade-left">
-                    <h2 class="text-3xl md:text-5xl font-bold text-secondary mb-6">Building the Future <br><span class="text-primary">with Technology</span></h2>
-                    <p class="text-gray-600 mb-8 text-lg leading-relaxed">
-                        At Weblance Consulting, We partner with businesses to Design and deliver intelligent Digital Solutions.
-                        From Web and Mobile Development to Data systems and AI Automation, We create scalable products that drive growth and long-term impact.
-                    </p>
-                    
-                    <div class="space-y-6">
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 mt-1">
-                                <div class="w-12 h-12 rounded-full bg-blue-100 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                                    <i class="fas fa-eye text-lg"></i>
-                                </div>
-                            </div>
-                            <div class="ml-5">
-                                <h4 class="text-xl font-bold text-secondary">Our Vision</h4>  
-                                <p class="text-gray-500 mt-1">To build a smarter digital future for businesses worldwide.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start group">
-                            <div class="flex-shrink-0 mt-1">
-                                <div class="w-12 h-12 rounded-full bg-purple-100 text-accent flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors duration-300">
-                                    <i class="fas fa-rocket text-lg"></i>
-                                </div>
-                            </div>
-                            <div class="ml-5">
-                                <h4 class="text-xl font-bold text-secondary">Our Mission</h4>
-                                <p class="text-gray-500 mt-1">To Create secure, scalable digital solutions powered by modern Web, Mobile Apps, Data, and AI technologies.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-
-    <section id="team" class="py-24 bg-white">
+    <!-- <section id="team" class="py-16 md:py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16" data-aos="fade-up">
                 <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">Meet Our Experts</h2>
                 <div class="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="100">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Kartik.png" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" alt="Kartik Kumar" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
-                                </div>
-                        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                <div class="text-center group" data-aos="fade-up">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Kartik.png" class="w-full h-full object-cover" alt="Kartik Kumar">
                     </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Kartik Kumar</h3>
-                        <p class="text-xs font-medium text-gray-500">CEO & Founder</p>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Kartik Kumar</h3>
+                    <p class="text-xs text-primary font-medium">CEO & Founder</p>
+                </div>
+                <div class="text-center group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Suraj.png" class="w-full h-full object-cover" alt="Suraj Kumar">
                     </div>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Suraj Kumar</h3>
+                    <p class="text-xs text-primary font-medium">Lead Developer</p>
+                </div>
+                <div class="text-center group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Krishan.png" class="w-full h-full object-cover" alt="Krishna Roy">
+                    </div>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Krishna Roy</h3>
+                    <p class="text-xs text-primary font-medium">Designer Head</p>
+                </div>
+                <div class="text-center group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Ruchika.jpeg" class="w-full h-full object-cover" alt="Ruchika Singh">
+                    </div>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Ruchika Singh</h3>
+                    <p class="text-xs text-primary font-medium">SEO Specialist</p>
+                </div>
+                <div class="text-center group" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Monika.jpeg" class="w-full h-full object-cover" alt="Monika Singh">
+                    </div>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Monika Singh</h3>
+                    <p class="text-xs text-primary font-medium">Management</p>
+                </div>
+                <div class="text-center group" data-aos="fade-up" data-aos-delay="500">
+                    <div class="w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-gray-100 mb-4 shadow-lg group-hover:border-primary transition-all duration-300 transform group-hover:scale-105">
+                        <img src="Image/Sumit.jpeg" class="w-full h-full object-cover" alt="Sumit Kumar">
+                    </div>
+                    <h3 class="font-bold text-secondary group-hover:text-primary transition-colors">Sumit Kumar</h3>
+                    <p class="text-xs text-primary font-medium">Marketing</p>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <section id="about" class="py-16 md:py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
+                <div class="w-full lg:w-1/2 relative group" data-aos="fade-right">
+                    <div class="absolute inset-0 bg-primary/20 rounded-3xl rotate-6 transform transition-transform duration-500 group-hover:rotate-3 scale-95 md:scale-100"></div>
+                    <img src="Image/Company BG.png" 
+                         onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" 
+                         alt="About Weblance" 
+                         class="relative z-10 w-full h-auto object-cover rounded-3xl shadow-2xl transform transition-transform duration-500 group-hover:-translate-y-2 border border-gray-100 h-[400px] lg:h-[500px]"> 
                 </div>
 
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="200">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Suraj.png" onerror="this.src='https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" alt="Suraj Kumar" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
+                <div class="w-full lg:w-1/2" data-aos="fade-left">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-secondary mb-6 leading-tight">
+                        Building the Future <br class="hidden lg:block">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">with Technology</span>
+                    </h2>
+                    
+                    <p class="text-base sm:text-lg text-gray-600 mb-8 leading-relaxed">
+                        At Weblance Consulting, we partner with businesses to Design and deliver intelligent Digital Solutions.
+                        From Web and Mobile Development to Data systems and AI Automation, we create scalable products that drive growth and long-term impact.
+                    </p>
+                    
+                    <div class="space-y-6 sm:space-y-8">
+                        <div class="flex items-start group/item">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-blue-50 text-primary flex items-center justify-center text-xl transition-all duration-300 group-hover/item:bg-primary group-hover/item:text-white shadow-sm">
+                                    <i class="fas fa-eye"></i>
                                 </div>
+                            </div>
+                            <div class="ml-4 sm:ml-6">
+                                <h4 class="text-lg sm:text-xl font-bold text-secondary group-hover/item:text-primary transition-colors">Our Vision</h4>  
+                                <p class="text-sm sm:text-base text-gray-500 mt-1 leading-relaxed">To build a smarter digital future for businesses worldwide through innovation and excellence.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start group/item">
+                            <div class="flex-shrink-0 mt-1">
+                                <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-purple-50 text-accent flex items-center justify-center text-xl transition-all duration-300 group-hover/item:bg-accent group-hover/item:text-white shadow-sm">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4 sm:ml-6">
+                                <h4 class="text-lg sm:text-xl font-bold text-secondary group-hover/item:text-accent transition-colors">Our Mission</h4>
+                                <p class="text-sm sm:text-base text-gray-500 mt-1 leading-relaxed">To create secure, scalable digital solutions powered by modern Web, Mobile Apps, Data, and AI technologies.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Suraj Kumar</h3>
-                        <p class="text-xs font-medium text-gray-500">Lead Developer</p>
-                    </div>
                 </div>
-
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="500">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Ruchika.jpeg" alt="New Member" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
-                                </div>
-                        </div>
-                    </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Ruchika Singh</h3>
-                        <p class="text-xs font-medium text-gray-500">SEO Specialist</p>
-                    </div>
-                </div>
-
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="300">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Krishan.png" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" alt="Krishna Roy" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
-                                </div>
-                        </div>
-                    </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Krishna Roy</h3>
-                        <p class="text-xs font-medium text-gray-500">Designer Head</p>
-                    </div>
-                </div>
-
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="600">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Monika.jpeg" alt="New Member" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
-                                </div>
-                        </div>
-                    </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Monika Singh</h3>
-                        <p class="text-xs font-medium text-gray-500">Management Head</p>
-                    </div>
-                </div>
-
-                <div class="team-card bg-gray-50 rounded-2xl shadow-lg overflow-hidden group hover:-translate-y-2 transition-transform duration-300 border border-gray-100" data-aos="fade-up" data-aos-delay="400">
-                    <div class="team-img-wrapper h-64 overflow-hidden relative">
-                        <img src="Image/Sumit.jpeg" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80'" alt="Sumit Kumar" class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"/>
-                        <div class="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                            <div class="flex space-x-4">
-                                </div>
-                        </div>
-                    </div>
-                    <div class="p-4 text-center border-t border-gray-200">
-                        <h3 class="text-base font-bold text-secondary group-hover:text-primary transition-colors">Sumit Kumar</h3>
-                        <p class="text-xs font-medium text-gray-500">Marketing Head</p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
 
-    <section id="contact" class="py-24 bg-white relative">
+    <section id="contact" class="py-16 md:py-24 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                 <div data-aos="fade-right">
                     <h2 class="text-3xl md:text-5xl font-bold text-secondary mb-6">Let’s Start <span class="text-primary">Your Project</span></h2>
                     <p class="text-gray-600 mb-8 text-lg">Share your idea or project with us.
                         <br>    We help you design, build, and scale smart digital solutions.</p>
                     
-                    <div class="space-y-8 mb-8">
+                    <div class="space-y-6 md:space-y-8 mb-8">
                         <div class="flex items-center group">
-                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-6">
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="ml-5">
@@ -611,7 +532,7 @@
                             </div>
                         </div>
                         <div class="flex items-center group">
-                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-6">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="ml-5">
@@ -620,54 +541,62 @@
                             </div>
                         </div>
                         <div class="flex items-center group">
-                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                            <div class="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl group-hover:bg-primary group-hover:text-white transition-all duration-300 transform group-hover:rotate-6">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="ml-5">
                                 <h4 class="font-bold text-secondary text-lg">Location</h4>
-                                <p class="text-gray-600">Near Market, Sector 61, Noida</p>
+                                <p class="text-gray-600">India</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="w-full h-64 bg-gray-200 rounded-2xl overflow-hidden shadow-inner border border-gray-200">
                         <iframe 
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.5620958182746!2d77.3638!3d28.6129!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce561e1b1b1b1%3A0x1b1b1b1b1b1b1b1b!2sSector%2061%2C%20Noida%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1625634523456!5m2!1sen!2sin" 
+                            src="https://maps.google.com/maps?q=India&t=&z=5&ie=UTF8&iwloc=&output=embed" 
                             width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                 </div>
 
                 <div class="bg-gray-50 p-10 rounded-3xl shadow-lg border border-gray-100" data-aos="fade-left">
                     <h3 class="text-2xl font-bold text-secondary mb-6">Send Message</h3>
-                    <form class="space-y-6">
+                    
+                    <form id="contact-form" class="space-y-6">
+                        <input type="hidden" name="contact_number">
+
                         <div class="relative">
-                            <input type="text" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Name" id="name">
-                            <label for="name" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Your Name</label>
+                            <input type="text" name="user_name" required class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Name" id="user_name">
+                            <label for="user_name" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Your Name</label>
                         </div>
+
                         <div class="relative">
-                            <input type="email" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Email" id="email">
-                            <label for="email" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Email Address</label>
+                            <input type="email" name="user_email" required class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Email" id="user_email">
+                            <label for="user_email" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Email Address</label>
                         </div>
+
                         <div class="relative">
-                            <input type="number" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Phone Number" id="Phone Number">
-                            <label for="email" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Phone Number</label>
+                            <input type="number" name="user_phone" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Phone Number" id="user_phone">
+                            <label for="user_phone" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Phone Number</label>
                         </div>
+
                         <div class="relative">
-                            <select class="w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition bg-white text-gray-600">
-                                <option>Select [Project Type]</option>
-                                <option>App Development</option>
-                                <option>Website Development</option>
-                                <option>Digital Marketing</option>
-                                <option>Data Analytics</option>
-                                <option>AI Solutions</option>
-                                <option>UI/UX Design</option>
+                            <select name="project_type" class="w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition bg-white text-gray-600">
+                                <option value="Not Selected">Select [Project Type]</option>
+                                <option value="App Development">App Development</option>
+                                <option value="Website Development">Website Development</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                                <option value="Data Analytics">Data Analytics</option>
+                                <option value="AI Solutions">AI Solutions</option>
+                                <option value="UI/UX Design">UI/UX Design</option>
                             </select>
                         </div>
+
                         <div class="relative">
-                            <textarea rows="4" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Message" id="message"></textarea>
+                            <textarea name="message" required rows="4" class="peer w-full px-4 py-4 rounded-xl border border-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder-transparent bg-white" placeholder="Message" id="message"></textarea>
                             <label for="message" class="absolute left-4 top-0 text-xs text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-4 peer-focus:-top-2.5 peer-focus:text-xs peer-focus:text-primary bg-white px-1">Tell us about your project</label>
                         </div>
-                        <button type="submit" class="w-full bg-gradient-to-r from-primary to-blue-600 text-white font-bold py-4 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-primary to-blue-600 text-white font-bold py-4 rounded-xl hover:shadow-lg hover:-translate-y-1 transition-all duration-300 hover:shadow-blue-500/50">
                             Send Message <i class="fas fa-paper-plane ml-2"></i>
                         </button>
                     </form>
@@ -731,7 +660,7 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // 1. Initialize AOS Animations
+        // 1. Initialize AOS (Animations)
         AOS.init({
             duration: 1000,
             once: true,
@@ -739,17 +668,37 @@
             easing: 'ease-out-cubic'
         });
 
-        // 2. Preloader & Back to Top
+        // 2. Preloader & Back to Top Logic
         window.onload = function() {
             setTimeout(() => {
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('preloader').style.display = 'none';
-                }, 500);
+                const preloader = document.getElementById('preloader');
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden'; // Ensure it doesn't block clicks
+                
+                // Initialize particles after load to ensure container exists
+                if(window.particlesJS) {
+                    particlesJS("particles-js", {
+                        "particles": {
+                            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                            "color": { "value": "#3B82F6" },
+                            "shape": { "type": "circle" },
+                            "opacity": { "value": 0.5, "random": false },
+                            "size": { "value": 3, "random": true },
+                            "line_linked": { "enable": true, "distance": 150, "color": "#3B82F6", "opacity": 0.4, "width": 1 },
+                            "move": { "enable": true, "speed": 4, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+                        },
+                        "interactivity": {
+                            "detect_on": "canvas",
+                            "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                            "modes": { "repulse": { "distance": 100, "duration": 0.4 }, "push": { "particles_nb": 4 } }
+                        },
+                        "retina_detect": true
+                    });
+                }
             }, 1000);
         }
 
-        // 3. Scroll Events
+        // 3. Scroll Events (Progress Bar & Glass Navbar)
         window.onscroll = function() {
             // Progress Bar
             var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -767,7 +716,7 @@
                 nav.classList.remove('shadow-lg');
             }
 
-            // Back to Top Button Visibility
+            // Back to Top Button
             if (window.scrollY > 500) {
                 backBtn.classList.remove('opacity-0', 'translate-y-20');
             } else {
@@ -794,58 +743,58 @@
             });
         });
 
-        // 6. Typewriter Effect
-        const words = ["Websites", "Mobile Apps", "AI Solutions", "Growth"];
-        let i = 0;
-        let timer;
+        // 6. Optimized Typewriter Effect
+        const words = ["Websites", "Apps", "Growth"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typeSpeed = 150;
+        const deleteSpeed = 100;
+        const pauseTime = 2000;
 
-        function typingEffect() {
-            let word = words[i].split("");
-            var loopTyping = function() {
-                if (word.length > 0) {
-                    document.getElementById('typewriter').innerHTML += word.shift();
-                } else {
-                    setTimeout(deletingEffect, 2000); 
-                    return false;
-                };
-                timer = setTimeout(loopTyping, 150);
-            };
-            loopTyping();
-        };
+        function type() {
+            const currentWord = words[wordIndex];
+            const typeWriterElement = document.getElementById('typewriter');
+            
+            if (isDeleting) {
+                typeWriterElement.innerText = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typeWriterElement.innerText = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
 
-        function deletingEffect() {
-            let word = words[i].split("");
-            var loopDeleting = function() {
-                if (word.length > 0) {
-                    word.pop();
-                    document.getElementById('typewriter').innerHTML = word.join("");
-                } else {
-                    if (words.length > (i + 1)) {
-                        i++;
-                    } else {
-                        i = 0;
+            let nextSpeed = isDeleting ? deleteSpeed : typeSpeed;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                nextSpeed = pauseTime;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+
+            setTimeout(type, nextSpeed);
+        }
+        type();
+
+        // 7. Spotlight Effect Logic (Optimized)
+        const container = document.getElementById("cards-container");
+        if(container) {
+            container.onmousemove = e => {
+                // Use requestAnimationFrame for performance
+                requestAnimationFrame(() => {
+                    const cards = document.querySelectorAll(".spotlight-card");
+                    for(const card of cards) {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty("--mouse-x", `${x}px`);
+                        card.style.setProperty("--mouse-y", `${y}px`);
                     };
-                    typingEffect();
-                    return false;
-                };
-                timer = setTimeout(loopDeleting, 100);
+                });
             };
-            loopDeleting();
-        };
-        typingEffect();
-
-        // 7. Spotlight Effect
-        const cards = document.querySelectorAll(".spotlight-card");
-        document.getElementById("cards-container").onmousemove = e => {
-            for(const card of cards) {
-                const rect = card.getBoundingClientRect(),
-                x = e.clientX - rect.left,
-                y = e.clientY - rect.top;
-
-                card.style.setProperty("--mouse-x", `${x}px`);
-                card.style.setProperty("--mouse-y", `${y}px`);
-            };
-        };
+        }
 
         // 8. Number Counter Animation
         const counters = document.querySelectorAll('.counter');
@@ -880,6 +829,41 @@
             });
         }, options);
         observer.observe(counterSection);
+
+        // 9. Initialize Vanilla Tilt (3D Cards) - Ensuring no conflict
+        if(typeof VanillaTilt !== 'undefined') {
+            VanillaTilt.init(document.querySelectorAll(".spotlight-card"), {
+                max: 15,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.2,
+                scale: 1.02
+            });
+        }
+
+        // 10. EmailJS Integration
+        emailjs.init("86PIM_woNqOoJlnT1");
+
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const btn = this.querySelector('button[type="submit"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin ml-2"></i>';
+            
+            this.contact_number.value = Math.random() * 100000 | 0;
+            
+            emailjs.sendForm('service_6xdsyqi', 'template_9n39y06', this)
+                .then(function() {
+                    alert('Message Sent Successfully to Weblance Consulting!');
+                    document.getElementById('contact-form').reset();
+                    btn.innerHTML = originalText;
+                }, function(error) {
+                    alert('Failed to send message. Please try again.');
+                    console.error('FAILED...', error);
+                    btn.innerHTML = originalText;
+                });
+        });
 
     </script>
 </body>
